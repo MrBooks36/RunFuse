@@ -1,19 +1,18 @@
-import tarfile
-from pathlib import Path
-from shutil import rmtree
-from json import load
-from subprocess import call
-
 def decompile(argv):
+    import tarfile
+    from pathlib import Path
+    from shutil import rmtree
+    from json import load
+    from subprocess import call
     if '.mrb36' not in argv[1]:
         print('Not a mrb36 file')
         return
-
     input_path = Path(argv[1])
     if not input_path.is_absolute():
         input_path = input_path.resolve()
-
-    original_path = Path.cwd()
+    if not Path.exists(input_path):
+        print(f'File not found: {input_path}')
+        return
     temp_dir = Path('C:/Windows/TEMP')
 
     name = input_path.stem
