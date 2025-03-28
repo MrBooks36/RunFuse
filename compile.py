@@ -12,8 +12,11 @@ def make_mrb36(argv):
     print(runtime_path)
 
     if not runtime_path.exists():
-        print('runtime args not found!')
-        return
+        print('Runtime args not found! Generating now...')
+        with open(runtime_path, 'w') as file:
+            file.write({
+                "exe":f"{name}.exe"
+            })
 
     if script_path.suffix != '.py':
         print('Expected a Python script file (.py)')
@@ -53,12 +56,23 @@ def make_mrb36(argv):
 
     rmtree(output_dir)
 
-def prep():
-  name = input('File name: ')
-  name = name.replace('.py', "")
-  content = f'''
-# -*- mode: python ; coding: utf-8 -*-
 
+def prep():
+    from pathlib import Path
+    # Get the file name from the user input
+    filename = input('File name (with .py extension): ').strip()
+    
+    # Validate the input to ensure it ends with .py extension
+    if not filename.endswith('.py'):
+        print("Error: The file name should end with .py")
+        return
+
+    # Create the name without the .py extension
+    name = Path(filename).stem
+    
+    # Create the content for the spec file using a template string
+    content = f"""
+# -*- mode: python ; coding: utf-8 -*-
 
 a = Analysis(
     ['{name}.py'],
@@ -67,7 +81,7 @@ a = Analysis(
     datas=[],
     hiddenimports=[],
     hookspath=[],
-    hooksconfig={'{}'},
+    hooksconfig={{}},
     runtime_hooks=[],
     excludes=[],
     noarchive=False,
@@ -101,11 +115,39 @@ coll = COLLECT(
     upx_exclude=[],
     name='{name}',
 )
-'''
-  with open(name+'.spec', 'w') as file:
-    file.write(content)
+"""
+    # Define the path for the .spec file
+    spec_file_path = Path(f"{name}.spec")
+    
+    try:
+        # Write the content to the .spec file
+        with spec_file_path.open('w') as file:
+            file.write(content)
+        print(f"Spec file '{spec_file_path}' created successfully.")
+    except IOError as e:
+        print(f"Error: Unable to write to file {spec_file_path}: {e}")
 
-def wrap():
-  from os import system
-  from sys import argv
-  system(f'tar -rzf wrap.mrb36 {argv[2]}')
+def wrap(argv):
+    from tarfile import open as opentar
+    from pathlib import Path
+
+    dir_path = Path(argv[2])
+    folder_path = Path(dir_path)
+    folder_name = folder_path.name
+    tar_file_path = Path(f'{folder_name}.mrb36')
+
+    if not dir_path.is_dir():
+        print(f"Error: {argv[2]} is not a valid directory.")
+        return
+
+    runtime_path = dir_path / 'runtime.json'
+    if not runtime_path.exists():
+        print(f"Error: runtime.json not found in {dir_path}.")
+        return
+
+    try:
+        with opentar(tar_file_path, 'w:gz') as tar:
+            tar.add(dir_path, arcname=dir_path.name)
+        print(f"{tar_file_path} created successfully.")
+    except Exception as e:
+        print(f"Error: Unable to create mrb36 file {tar_file_path}: {e}")
