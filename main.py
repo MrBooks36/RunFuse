@@ -1,10 +1,11 @@
 from sys import argv
-from compile import make_mrb36
+from compile import make_mrb36, prep, wrap
 from decompile import decompile
 
 if len(argv) > 1:
  if len(argv) > 2:
-  if argv[1] == 'compile':
-   make_mrb36(argv)
- else:
-  decompile(argv)
+  if argv[1] == 'compile': make_mrb36(argv)
+  elif argv[1] == 'wrap': wrap()
+  else: decompile(argv)
+ elif argv[1] == 'prep': prep()
+ else: decompile(argv)
