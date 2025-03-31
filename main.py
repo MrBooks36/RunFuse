@@ -1,3 +1,8 @@
+from platform import system
+if not system() == 'Windows':
+ print('At the current point in time this is only available on Windows')
+ input('Press enter to exit')
+ exit()
 from sys import argv
 from compile import compile, wrap
 from decompile import decompile
