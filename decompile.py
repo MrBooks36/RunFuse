@@ -4,6 +4,7 @@ def decompile(argv):
     from shutil import rmtree
     from json import load
     from subprocess import call
+    from os import getlogin
     if '.mrb36' not in argv[1]:
         print('Not a mrb36 file')
         return
@@ -13,7 +14,7 @@ def decompile(argv):
     if not Path.exists(input_path):
         print(f'File not found: {input_path}')
         return
-    temp_dir = Path('C:/Windows/TEMP')
+    temp_dir = Path(f'C:/Users/{getlogin()}/AppData/Local/Temp')
 
     name = input_path.stem
     extracted_dir = temp_dir / name
@@ -30,18 +31,21 @@ def decompile(argv):
 
     # Read the runtime.json file
     with open(runtime_file, 'r') as file:
-        exe = load(file).get('exe', '')
-        exe_name = Path(exe).stem if exe else name
+        data = load(file)
+        exe = data.get('exe', '')
+        exe_name = Path(exe).stem if exe else 'name'  # Replace 'name' with an appropriate default name or variable
+        keep = data.get('keep', '')
     
     # Collect additional arguments to pass to the executable
     exe_args = argv[2:]  # Skip the script name and the first argument which is the path to the tar file
 
     # Run the executable with additional arguments
-    exe_path = extracted_dir / f'{exe_name}.exe'
+    exe_path = extracted_dir / exe
     if exe_path.exists():
         call([str(exe_path)] + exe_args)
     else:
         print(f'Executable {exe_name}.exe not found in the extracted files')
 
     # Clean up
-    rmtree(extracted_dir)
+    if not keep:
+     rmtree(extracted_dir)
