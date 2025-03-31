@@ -19,7 +19,7 @@ def compile(argv):
     pram = input()
     if pram.lower() == 'nuitka': system(f'python -m nuitka --follow-imports --standalone --remove-output --mingw64  {argv[2]}')
     elif pram.lower() == 'pyinstaller': system(f'python -m PyInstaller --onedir {argv[2]}')
-    elif pram.lower() == 'py2exe': system(f'python {argv[2]} py2exe')
+    elif pram.lower() == 'py2exe': system(f'python -m py2exe -d {argv[2]}')
 
     
 def wrap(argv):
