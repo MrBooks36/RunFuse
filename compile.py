@@ -1,4 +1,5 @@
 def compile(argv):
+ if len(argv) >= 3:
     from shutil import which
     from os import getlogin, system
     if which('Python') == None:
@@ -14,14 +15,16 @@ def compile(argv):
     else: nuitka = False
     if not which('py2exe') == None: py2exe = True
     else: py2exe = False
-    print('Select Python compiler:')
-    if PyIstaller: print('PyInstaller')
-    if nuitka: print('Nuitka')
-    if py2exe: print('Py2exe')
-    pram = input()
-    if pram.lower() == 'nuitka': system(f'python -m nuitka --follow-imports --standalone --remove-output --mingw64  {argv[2]}')
-    elif pram.lower() == 'pyinstaller': system(f'python -m PyInstaller --onedir {argv[2]}')
-    elif pram.lower() == 'py2exe': system(f'python -m py2exe -d {argv[2]}')
+    if not len(argv) == 4:
+     print('Select Python compiler:')
+     if PyIstaller: print('PyInstaller')
+     if nuitka: print('Nuitka')
+     if py2exe: print('Py2exe')
+     pram = input()
+    else: pram = argv[3]
+    if pram.lower() == 'nuitka' and nuitka: system(f'python -m nuitka --follow-imports --standalone --remove-output --mingw64  {argv[2]}')
+    elif pram.lower() == 'pyinstaller' and PyIstaller: system(f'python -m PyInstaller --onedir {argv[2]}')
+    elif pram.lower() == 'py2exe' and py2exe: system(f'python -m py2exe -d {argv[2]}')
     else: print(f'Invalid Input: {pram}')
 
     
