@@ -49,3 +49,24 @@ def decompile(argv):
     # Clean up
     if not keep:
      rmtree(extracted_dir)
+
+def uninstall():
+    from os import chdir, getlogin
+    from os.path import dirname
+    from sys import argv, exit
+    from subprocess import Popen
+    current_script_path=dirname(argv[0])
+    chdir(f'C:\\Users\\{getlogin()}\\AppData\\Local')
+    with open('del.bat', 'w') as file:
+      file.write('''
+@echo off
+powershell sleep 1
+echo ..
+echo This script will now delete itself.
+echo Done! Press Enter to exit. The error below is ok.
+rmdir /s /Q %*
+del "%~f0"
+                 ''')
+      file.close()
+      Popen(["del.bat", current_script_path])
+      exit()
