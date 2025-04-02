@@ -5,11 +5,7 @@ if not system() == 'Windows':
  exit()
 from sys import argv
 from compile import compile, wrap
-from decompile import decompile
-def uninstall():
-    import os
-    current_script_path = os.path.abspath(__file__)
-    print('Delete This Folder:'+os.path.dirname(current_script_path))
+from decompile import decompile, uninstall
 try:
  if len(argv) > 1:
   if len(argv) > 2:
@@ -19,4 +15,4 @@ try:
   elif argv[1] == 'uninstall': uninstall()
   else: decompile(argv)
 except KeyboardInterrupt:
- exit()
+ quit()
