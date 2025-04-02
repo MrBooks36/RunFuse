@@ -4,7 +4,7 @@ def decompile(argv):
     from shutil import rmtree
     from json import load
     from subprocess import call
-    from os import getlogin
+    from os import getlogin, remove
     if '.mrb36' not in argv[1]:
         print('Not a mrb36 file')
         return
@@ -14,16 +14,24 @@ def decompile(argv):
     if not Path.exists(input_path):
         print(f'File not found: {input_path}')
         return
-    temp_dir = Path(f'C:/Users/{getlogin()}/AppData/Local/Temp')
+    temp_dir = Path(f'C:/Users/{getlogin()}/AppData/Local/Packager')
 
     name = input_path.stem
     extracted_dir = temp_dir / name
+    runtime_file = extracted_dir / 'runtime.json'
 
     # Extract tar file
     with tarfile.open(input_path, 'r') as tar:
-        tar.extractall(path=temp_dir)
+     if not extracted_dir.exists():
+      tar.extractall(path=temp_dir)
+     else:
+        try:
+         remove(runtime_file)
+        except FileNotFoundError:
+           pass
+        tar.extract(name+'/runtime.json',path=temp_dir)
 
-    runtime_file = extracted_dir / 'runtime.json'
+
 
     if not runtime_file.exists():
         print('runtime.json not found in the extracted files')
