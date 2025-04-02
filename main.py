@@ -15,4 +15,4 @@ try:
   elif argv[1] == 'uninstall': uninstall()
   else: decompile(argv)
 except KeyboardInterrupt:
- quit()
+ exit()
