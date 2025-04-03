@@ -1,10 +1,11 @@
 def decompile(argv):
-    import tarfile
+    from tarfile import open as opentar
     from pathlib import Path
     from shutil import rmtree
     from json import load
     from subprocess import call
-    from os import getlogin, remove
+    from os import getlogin, rename, remove
+    from os.path import getctime
     if '.mrb36' not in argv[1]:
         print('Not a mrb36 file')
         return
@@ -14,23 +15,28 @@ def decompile(argv):
     if not Path.exists(input_path):
         print(f'File not found: {input_path}')
         return
+    
     temp_dir = Path(f'C:/Users/{getlogin()}/AppData/Local/Packager')
-
     name = input_path.stem
     extracted_dir = temp_dir / name
     runtime_file = extracted_dir / 'runtime.json'
+    folder_name = str(extracted_dir) + str(getctime(str(input_path)))
 
     # Extract tar file
-    with tarfile.open(input_path, 'r') as tar:
-     if not extracted_dir.exists():
+    with opentar(input_path, 'r') as tar:
+     if not Path(folder_name).exists():
       tar.extractall(path=temp_dir)
+      tar.close
+      rename(extracted_dir, folder_name)
      else:
-        try:
-         remove(runtime_file)
-        except FileNotFoundError:
-           pass
         tar.extract(name+'/runtime.json',path=temp_dir)
-
+        tar.close
+        remove(folder_name+'/runtime.json')
+        rename(extracted_dir / 'runtime.json', folder_name+'/runtime.json') 
+        rmtree(extracted_dir)
+    
+    extracted_dir = Path(folder_name)
+    runtime_file = extracted_dir / 'runtime.json'
 
 
     if not runtime_file.exists():
@@ -41,7 +47,7 @@ def decompile(argv):
     with open(runtime_file, 'r') as file:
         data = load(file)
         exe = data.get('exe', '')
-        exe_name = Path(exe).stem if exe else 'name'  # Replace 'name' with an appropriate default name or variable
+        exe_name = Path(exe).stem if exe else name  # Replace 'name' with an appropriate default name or variable
         keep = data.get('keep', '')
     
     # Collect additional arguments to pass to the executable
