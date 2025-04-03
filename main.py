@@ -1,7 +1,8 @@
 from sys import argv, exit
 from platform import system
-from compile import compile, wrap
-from decompile import decompile, uninstall
+from compile import *
+from decompile import *
+from manage import *
 
 def main():
     if system() != 'Windows':
@@ -10,10 +11,11 @@ def main():
         exit()
 
     if len(argv) > 1:
-        command = argv[1]
+        command = argv[1].lower()
         if command == 'compile': compile(argv)
         elif command == 'wrap': wrap(argv)
         elif command == 'uninstall': uninstall()
+        elif command == 'clean': clean()
         else: decompile(argv)
 
 if __name__ == '__main__':
