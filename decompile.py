@@ -4,8 +4,11 @@ def decompile(argv):
     from shutil import rmtree
     from json import load
     from subprocess import call
-    from os import getlogin, rename, remove
+    from os import getlogin, rename, remove, system
     from os.path import getctime
+    from threading import Thread
+    from time import sleep
+    isload = 0
     if '.mrb36' not in argv[1]:
         print('Not a mrb36 file')
         return
@@ -16,11 +19,33 @@ def decompile(argv):
         print(f'File not found: {input_path}')
         return
     
+    def loading():
+       while not isload:
+        if not isload: 
+         print('Loading.')
+         sleep(0.5)
+        if not isload:  
+         system('cls')
+         print('Loading..')
+         sleep(0.5)
+         system('cls')
+        if not isload: 
+         print('Loading...')
+         sleep(0.5)
+         system('cls')
+       return    
+
+
     temp_dir = Path(f'C:/Users/{getlogin()}/AppData/Local/Packager')
     name = input_path.stem
     extracted_dir = temp_dir / name
     runtime_file = extracted_dir / 'runtime.json'
     folder_name = str(extracted_dir) + str(getctime(str(input_path)))
+
+
+    thr = Thread(target=loading)
+    thr.start()
+
 
     # Extract tar file
     with opentar(input_path, 'r') as tar:
@@ -56,9 +81,13 @@ def decompile(argv):
     # Run the executable with additional arguments
     exe_path = extracted_dir / exe
     if exe_path.exists():
+        isload = 1
+        thr.join()
+        system('cls')
         call([str(exe_path)] + exe_args)
     else:
         print(f'Executable {exe_name}.exe not found in the extracted files')
+        return
 
     # Clean up
     if not keep:
