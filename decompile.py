@@ -11,12 +11,14 @@ def decompile(argv):
     isload = 0
     if '.mrb36' not in argv[1]:
         print('Not a mrb36 file')
+        input('Press enter to exit')
         return
     input_path = Path(argv[1])
     if not input_path.is_absolute():
         input_path = input_path.resolve()
     if not Path.exists(input_path):
         print(f'File not found: {input_path}')
+        input('Press enter to exit')
         return
     
     def loading():
@@ -66,6 +68,7 @@ def decompile(argv):
 
     if not runtime_file.exists():
         print('runtime.json not found in the extracted files')
+        input('Press enter to exit')
         return
 
     # Read the runtime.json file
@@ -87,6 +90,7 @@ def decompile(argv):
         call([str(exe_path)] + exe_args)
     else:
         print(f'Executable {exe_name}.exe not found in the extracted files')
+        input('Press enter to exit')
         return
 
     # Clean up
@@ -99,6 +103,10 @@ def uninstall():
     from sys import argv, exit
     from subprocess import Popen
     current_script_path=dirname(argv[0])
+    if not current_script_path == 'Packager':
+       print("cannnot uninstall in portable mode")
+       input('Press enter to exit')
+       return
     chdir(f'C:\\Users\\{getlogin()}\\AppData\\Local')
     with open('del.bat', 'w') as file:
       file.write('''
