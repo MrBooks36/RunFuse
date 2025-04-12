@@ -7,7 +7,8 @@ def rmold():
     import os
     import shutil
     import time
-
+    if not os.path.exists(f'C:/Users/{os.getlogin()}/AppData/Local/Packager'):
+        return
     current_time = time.time()
     duration_seconds = 30 * 86400  # Convert days to seconds
 
