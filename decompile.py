@@ -69,6 +69,7 @@ def decompile(argv):
     if not runtime_file.exists():
         print('runtime.json not found in the extracted files')
         input('Press enter to exit')
+        isload = 1
         return
 
     # Read the runtime.json file
@@ -91,6 +92,7 @@ def decompile(argv):
     else:
         print(f'Executable {exe_name}.exe not found in the extracted files')
         input('Press enter to exit')
+        isload = 1
         return
 
     # Clean up
@@ -103,6 +105,7 @@ def uninstall():
     from sys import argv, exit
     from subprocess import Popen
     current_script_path=dirname(argv[0])
+    print(current_script_path)
     if not current_script_path == 'Packager':
        print("cannnot uninstall in portable mode")
        input('Press enter to exit')
