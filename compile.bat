@@ -1,6 +1,6 @@
 @echo off
-del Packager /Q
-rmdir Packager /Q
+del RunFuse /Q
+rmdir RunFuse /Q
 python -m nuitka --follow-imports --standalone --remove-output --windows-console-mode=attach --mingw64  main.py
-rename main.dist Packager
-rename Packager\main.exe Packager.exe
+rename main.dist RunFuse
+rename RunFuse\main.exe RunFuse.exe

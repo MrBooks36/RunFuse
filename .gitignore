@@ -5,4 +5,4 @@ __pycache__
 /build/
 *.spec
 __pycache__/
-*.mrb36
+*.runfuse

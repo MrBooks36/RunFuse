@@ -1,19 +1,19 @@
 def clean():
     from shutil import rmtree
     from os import getlogin
-    rmtree(f'C:/Users/{getlogin()}/AppData/Local/Packager')
+    rmtree(f'C:/Users/{getlogin()}/AppData/Local/RunFuse')
 
 def rmold():
     import os
     import shutil
     import time
-    if not os.path.exists(f'C:/Users/{os.getlogin()}/AppData/Local/Packager'):
+    if not os.path.exists(f'C:/Users/{os.getlogin()}/AppData/Local/RunFuse'):
         return
     current_time = time.time()
     duration_seconds = 30 * 86400  # Convert days to seconds
 
-    for folder_name in os.listdir(f'C:/Users/{os.getlogin()}/AppData/Local/Packager'):
-        folder_path = os.path.join(f'C:/Users/{os.getlogin()}/AppData/Local/Packager', folder_name)
+    for folder_name in os.listdir(f'C:/Users/{os.getlogin()}/AppData/Local/RunFuse'):
+        folder_path = os.path.join(f'C:/Users/{os.getlogin()}/AppData/Local/RunFuse', folder_name)
 
         if os.path.isdir(folder_path):
             folder_time = os.path.getmtime(folder_path)

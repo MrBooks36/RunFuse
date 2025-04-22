@@ -1,6 +1,6 @@
 def decompile(argv):
     from tarfile import open as opentar
-    import ctypes
+    from tkinter import Tk, Label
     from pathlib import Path
     from shutil import rmtree
     from json import load
@@ -10,8 +10,8 @@ def decompile(argv):
     from threading import Thread
     from time import sleep
     isload = 0
-    if '.mrb36' not in argv[1]:
-        print('Not a mrb36 file')
+    if '.runfuse' not in argv[1]:
+        print('Not a runfuse file')
         input('Press enter to exit')
         return
     input_path = Path(argv[1])
@@ -23,23 +23,33 @@ def decompile(argv):
         return
     
     def loading():
-       while not isload:
-        if not isload: 
-         print('Loading.')
-         sleep(0.5)
-        if not isload:  
-         system('cls')
-         print('Loading..')
-         sleep(0.5)
-         system('cls')
-        if not isload: 
-         print('Loading...')
-         sleep(0.5)
-         system('cls')
-       return    
+        global root
+        root = Tk()
+        root.overrideredirect(True)
+        root.title("Infinite Parkour - Pack Manager")
+        screen_width = root.winfo_screenwidth()
+        screen_height = root.winfo_screenheight()
+    
+        # Calculate position x and y coordinates
+        x = (screen_width // 2) - (90 // 2)
+        y = (screen_height // 2) - (30 // 2)
+    
+        # Set the dimensions and position of the window
+        root.geometry(f'90x30+{x}+{y}')
+        root.resizable(False, False)
+        label = Label(root, text="Loading.")
+        label.grid(row=0, column=0, sticky="w", padx=10, pady=5)
+        root.update()
+        while not isload:
+           label.config(text="Loading..")
+           root.update()
+           sleep(0.5)
+           label.config(text="Loading...")
+           root.update()
+           sleep(0.5)
+        return
 
-
-    temp_dir = Path(f'C:/Users/{getlogin()}/AppData/Local/Packager')
+    temp_dir = Path(f'C:/Users/{getlogin()}/AppData/Local/RunFuse')
     name = input_path.stem
     extracted_dir = temp_dir / name
     runtime_file = extracted_dir / 'runtime.json'
@@ -77,11 +87,11 @@ def decompile(argv):
     with open(runtime_file, 'r') as file:
         data = load(file)
         exe = data.get('exe', '')
-        exe_name = Path(exe).stem if exe else name  # Replace 'name' with an appropriate default name or variable
+        exe_name = Path(exe).stem if exe else name
         keep = data.get('keep', '')
     
     # Collect additional arguments to pass to the executable
-    exe_args = argv[2:]  # Skip the script name and the first argument which is the path to the tar file
+    exe_args = argv[2:]  # Skip the script name and the first argument which is the path to the file
 
     # Run the executable with additional arguments
     exe_path = extracted_dir / exe

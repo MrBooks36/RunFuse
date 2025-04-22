@@ -1,6 +1,6 @@
 from sys import argv, exit
 from platform import system
-from compile import *
+from wrap import *
 from decompile import *
 from manage import *
 
