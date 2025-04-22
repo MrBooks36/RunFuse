@@ -12,7 +12,7 @@ def main():
 
     if len(argv) > 1:
         command = argv[1].lower()
-        if command == 'compile': compile(argv)
+        if command == 'pycompile': compile(argv)
         elif command == 'wrap': wrap(argv)
         elif command == 'uninstall': uninstall()
         elif command == 'clean': clean()

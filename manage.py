@@ -27,6 +27,31 @@ def rmold():
                     print(f"Error deleting folder {folder_path}: {e}")
 
 
+def uninstall():
+    from os import chdir, getlogin
+    from os.path import dirname, exists
+    from sys import exit
+    from subprocess import Popen
+    current_script_path = dirname(__file__)
+    if not exists(current_script_path+'/python312.dll'):
+       print("cannnot uninstall in portable mode")
+       input('Press enter to exit')
+       return
+    chdir(f'C:\\Users\\{getlogin()}\\AppData\\Local')
+    with open('del.bat', 'w') as file:
+      file.write('''
+@echo off
+powershell sleep 1
+echo ..
+echo This script will now delete itself.
+echo Done! Press Enter to exit. The error below is ok.
+rmdir /s /Q %*
+del "%~f0"
+                 ''')
+      file.close()
+      Popen(["del.bat", current_script_path])
+      exit()
+
 
 
 #setup 
