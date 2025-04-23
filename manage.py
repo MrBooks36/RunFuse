@@ -28,29 +28,26 @@ def rmold():
 
 
 def uninstall():
-    from os import chdir
-    from os.path import dirname, exists
-    from sys import exit
-    from subprocess import Popen
-    current_script_path = dirname(__file__)
-    print(current_script_path)
-    if not exists(current_script_path+'/python312.dll'):
-       print("cannnot uninstall in portable mode")
-       input('Press enter to exit')
-       return
-    chdir(f'C:\\Windows\\TEMP')
-    with open('del.bat', 'w') as file:
-      file.write('''
-@echo off
-powershell sleep 1
-echo press enter to exit
-rmdir /s /Q %*
-                 ''')
-      file.close()
-      Popen(["del.bat", current_script_path])
-      exit()
+    from os import system
+    from os.path import dirname, abspath, exists
+    from sys import argv
+    from shutil import rmtree, copytree
 
+    script_directory = dirname(abspath(argv[0]))
+    if exists("C:\\Windows\\TEMP\\RunFuse"): rmtree("C:\\Windows\\TEMP\\RunFuse")
+    copytree(script_directory, "C:\\Windows\\TEMP\\RunFuse")
+    file = open("C:\\Windows\\TEMP\\temp.asdf", "w")
+    file.write(script_directory)
+    system('start cmd /c C:\\Windows\\TEMP\\RunFuse\\Runfuse.exe uninstall2')
 
+def uninstall2():
+        from shutil import rmtree
+        from time import sleep
+        file = open("C:\\Windows\\TEMP\\temp.asdf", "r")
+        path = file.read()
+        sleep(3)
+        rmtree(path)
+        return
 
 #setup 
 rmold()

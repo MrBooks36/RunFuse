@@ -1,4 +1,5 @@
 def decompile(argv):
+ try:   
     from tarfile import open as opentar
     from tkinter import Tk, Label
     from pathlib import Path
@@ -9,23 +10,24 @@ def decompile(argv):
     from os.path import getctime
     from threading import Thread
     from time import sleep
+    def logerror(arg):
+       with open('ERROR.txt', "w") as file:
+          file.write(arg)
     isload = 0
     if '.runfuse' not in argv[1]:
-        print('Not a runfuse file')
-        input('Press enter to exit')
+        logerror('Not a runfuse file')
         return
     input_path = Path(argv[1])
     if not input_path.is_absolute():
         input_path = input_path.resolve()
     if not Path.exists(input_path):
-        print(f'File not found: {input_path}')
-        input('Press enter to exit')
+        logerror(f'File not found: {input_path}')
         return
     
     def loading():
-        global root
         root = Tk()
         root.overrideredirect(True)
+        root.attributes("-topmost", True)
         root.title("Infinite Parkour - Pack Manager")
         screen_width = root.winfo_screenwidth()
         screen_height = root.winfo_screenheight()
@@ -41,6 +43,9 @@ def decompile(argv):
         label.grid(row=0, column=0, sticky="w", padx=10, pady=5)
         root.update()
         while not isload:
+           label.config(text="Loading.")
+           root.update()
+           sleep(0.5)
            label.config(text="Loading..")
            root.update()
            sleep(0.5)
@@ -61,25 +66,23 @@ def decompile(argv):
 
 
     # Extract tar file
-    with opentar(input_path, 'r') as tar:
-     if not Path(folder_name).exists():
-      tar.extractall(path=temp_dir)
+    if not Path(folder_name).exists():
+     system(f"tar -vxf {input_path} -C {temp_dir}")
+     rename(extracted_dir, folder_name)
+    else:
+     with opentar(input_path, 'r:gz') as tar:
+      tar.extract(name+'/runtime.json',path=temp_dir)
       tar.close
-      rename(extracted_dir, folder_name)
-     else:
-        tar.extract(name+'/runtime.json',path=temp_dir)
-        tar.close
-        remove(folder_name+'/runtime.json')
-        rename(extracted_dir / 'runtime.json', folder_name+'/runtime.json') 
-        rmtree(extracted_dir)
+      remove(folder_name+'/runtime.json')
+      rename(extracted_dir / 'runtime.json', folder_name+'/runtime.json') 
+      rmtree(extracted_dir)
     
     extracted_dir = Path(folder_name)
     runtime_file = extracted_dir / 'runtime.json'
 
 
     if not runtime_file.exists():
-        print('runtime.json not found in the extracted files')
-        input('Press enter to exit')
+        logerror('runtime.json not found in the extracted files')
         isload = 1
         return
 
@@ -99,10 +102,12 @@ def decompile(argv):
         isload = 1
         thr.join()
         system('cls')
-        call([str(exe_path)] + exe_args)
+        try:
+         call([str(exe_path)] + exe_args)
+        except Exception as e:
+           logerror(e) 
     else:
-        print(f'Executable {exe_name}.exe not found in the extracted files')
-        input('Press enter to exit')
+        logerror(f'Executable {exe_name}.exe not found in the extracted files')
         isload = 1
         return
 
@@ -110,3 +115,6 @@ def decompile(argv):
     if not keep:
      rmtree(extracted_dir)
 
+ except Exception as e:
+    logerror(str(e))
+    isload = 1 

@@ -1,27 +1,73 @@
 def wrap(argv):
-    from tarfile import open as opentar
+ try:
+    from os import chdir, getcwd
     from pathlib import Path
+    from time import sleep
+    from threading import Thread
+    from tkinter import Tk, Label, messagebox
+    from subprocess import run
+    def logerror(arg):
+       with open('ERROR.txt', "w") as file:
+          file.write(arg)
+    isload = 0
+    def loading():
+        root = Tk()
+        root.overrideredirect(True)
+        root.attributes("-topmost", True)
+        root.title("Infinite Parkour - Pack Manager")
+        screen_width = root.winfo_screenwidth()
+        screen_height = root.winfo_screenheight()
+    
+        # Calculate position x and y coordinates
+        x = (screen_width // 2) - (90 // 2)
+        y = (screen_height // 2) - (30 // 2)
+    
+        # Set the dimensions and position of the window
+        root.geometry(f'90x30+{x}+{y}')
+        root.resizable(False, False)
+        label = Label(root, text="Loading.")
+        label.grid(row=0, column=0, sticky="w", padx=10, pady=5)
+        root.update()
+        while not isload:
+           label.config(text="Loading.")
+           root.update()
+           sleep(0.5)
+           label.config(text="Loading..")
+           root.update()
+           sleep(0.5)
+           label.config(text="Loading...")
+           root.update()
+           sleep(0.5)
+        messagebox.showinfo("Done!",f"{tar_file_path} created successfully.")
+        return
 
     dir_path = Path(argv[2])
     folder_path = Path(dir_path)
     folder_name = folder_path.name
-    tar_file_path = Path(f'{folder_name}.runfuse')
+    tar_file_path = Path(f'{getcwd()}\\{folder_name}.runfuse')
 
     if not dir_path.is_dir():
-        print(f"Error: {argv[2]} is not a valid directory.")
-        input('Press enter to exit')
+        logerror(f"Error: {argv[2]} is not a valid directory.")
+        
         return
 
     runtime_path = dir_path / 'runtime.json'
     if not runtime_path.exists():
-        print(f"Error: runtime.json not found in {dir_path}.")
-        input('Press enter to exit')
+        logerror(f"Error: runtime.json not found in {dir_path}.")
+        
         return
 
     try:
-        with opentar(tar_file_path, 'w:gz') as tar:
-            tar.add(dir_path, arcname=dir_path.name)
+        thr = Thread(target=loading)
+        thr.start()
+        chdir(folder_path.parent) 
+        tar = run(f'tar -vczf {tar_file_path} {folder_name}', check=True)
+        print(tar.stdout)
         print(f"{tar_file_path} created successfully.")
+        isload = 1
+        thr.join()
     except Exception as e:
-        print(f"Error: Unable to create runfuse file {tar_file_path}: {e}")
-        input('Press enter to exit')
+        logerror(f"Error: Unable to create runfuse file {tar_file_path}: {e}")
+ except Exception as e:
+    logerror(str(e))
+    isload = 1       
