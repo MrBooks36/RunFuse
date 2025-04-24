@@ -1,11 +1,10 @@
 def wrap(argv):
  try:
-    from os import chdir, getcwd
+    from os import chdir, getcwd, system
     from pathlib import Path
     from time import sleep
     from threading import Thread
     from tkinter import Tk, Label, messagebox
-    from subprocess import run
     def logerror(arg):
        with open('ERROR.txt', "w") as file:
           file.write(arg)
@@ -38,7 +37,8 @@ def wrap(argv):
            label.config(text="Loading...")
            root.update()
            sleep(0.5)
-        messagebox.showinfo("Done!",f"{tar_file_path} created successfully.")
+        if not isload == 2:
+         messagebox.showinfo("Done!",f"{tar_file_path} created successfully.")
         return
 
     dir_path = Path(argv[2])
@@ -48,21 +48,22 @@ def wrap(argv):
 
     if not dir_path.is_dir():
         logerror(f"Error: {argv[2]} is not a valid directory.")
-        
         return
 
     runtime_path = dir_path / 'runtime.json'
     if not runtime_path.exists():
         logerror(f"Error: runtime.json not found in {dir_path}.")
-        
         return
 
     try:
         thr = Thread(target=loading)
         thr.start()
         chdir(folder_path.parent) 
-        tar = run(f'tar -vczf {tar_file_path} {folder_name}', check=True)
-        print(tar.stdout)
+        tar = system(f'tar -vczf {tar_file_path} {folder_name}')
+        if tar != 0:
+           logerror("Tar Error")
+           isload = 2
+           return
         print(f"{tar_file_path} created successfully.")
         isload = 1
         thr.join()
@@ -70,4 +71,4 @@ def wrap(argv):
         logerror(f"Error: Unable to create runfuse file {tar_file_path}: {e}")
  except Exception as e:
     logerror(str(e))
-    isload = 1       
+    isload = 2

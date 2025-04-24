@@ -6,12 +6,13 @@ def decompile(argv):
     from shutil import rmtree
     from json import load
     from subprocess import call
-    from os import getlogin, rename, remove, system
+    from os import getlogin, rename, remove, system, getcwd, makedirs
     from os.path import getctime
     from threading import Thread
     from time import sleep
+    cwd = getcwd()
     def logerror(arg):
-       with open('ERROR.txt', "w") as file:
+       with open(cwd+'\\ERROR.txt', "w") as file:
           file.write(arg)
     isload = 0
     if '.runfuse' not in argv[1]:
@@ -53,9 +54,18 @@ def decompile(argv):
            root.update()
            sleep(0.5)
         return
+    
+    def list_folder_in_tar(tar_path):
+     folders = []
+     with opentar(tar_path, 'r') as tar:
+        for member in tar.getmembers():
+            if member.isdir():
+                folders.append(member.name)
+     for folder in folders:
+        return folder   
 
     temp_dir = Path(f'C:/Users/{getlogin()}/AppData/Local/RunFuse')
-    name = input_path.stem
+    name = list_folder_in_tar(input_path)
     extracted_dir = temp_dir / name
     runtime_file = extracted_dir / 'runtime.json'
     folder_name = str(extracted_dir) + str(getctime(str(input_path)))
@@ -64,10 +74,16 @@ def decompile(argv):
     thr = Thread(target=loading)
     thr.start()
 
+    if not temp_dir.exists():
+       makedirs(temp_dir)
 
     # Extract tar file
     if not Path(folder_name).exists():
-     system(f"tar -vxf {input_path} -C {temp_dir}")
+     tar = system(f'tar -vxf "{input_path}" -C "{temp_dir}"')
+     if tar != 0:
+           logerror("Tar Error")
+           isload = 1
+           return
      rename(extracted_dir, folder_name)
     else:
      with opentar(input_path, 'r:gz') as tar:
