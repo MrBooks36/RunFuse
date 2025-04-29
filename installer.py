@@ -2,11 +2,8 @@ import tkinter as tk
 from tkinter import ttk
 import threading
 from tarfile import open as opentar
-from os import getlogin, system
-from sys import argv
-if len(argv) == 2:
-    system('python -m nuitka --standalone --onefile --remove-output --windows-console-mode=disable --enable-plugin=tk-inter --include-data-files=runfuse.tar=runfuse.tar --windows-icon-from-ico=logo.ico --mingw64  installer.py')
-    exit()
+from os import getlogin
+
 class LoadingScreen:
     def __init__(self, root):
         self.root = root
@@ -34,9 +31,12 @@ class LoadingScreen:
         self.root.after(100, self.check_thread)  # Checking status of the thread periodically
 
     def installtask(self):
-     with opentar("runfuse.tar", 'r') as tar:
+     try:
+      with opentar("runfuse.tar", 'r') as tar:
             tar.extractall(path=f"C:/Users/{getlogin()}/AppData/Local/Programs", filter='fully_trusted')
-     
+     except Exception as e:
+         with open("ERROR.txt", 'w') as file:
+            file.write(e)
      self.loading = False
 
     def check_thread(self):
