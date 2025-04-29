@@ -6,7 +6,7 @@ def decompile(argv):
         from pathlib import Path
         from shutil import rmtree
         from json import load
-        from subprocess import run
+        from subprocess import run, call
         from os import getlogin, rename, getcwd, makedirs, chdir
         from os.path import getctime
         from threading import Thread
@@ -75,7 +75,7 @@ def decompile(argv):
         thr.start()
 
         if not Path(folder_name).exists():
-            tar_result = run(f'tar -xf "{input_path}" -C "{temp_dir}"', shell=True, capture_output=True, text=True)
+            tar_result = run(f'tar -vxf "{input_path}" -C "{temp_dir}"', shell=True)
             if tar_result.returncode != 0:
                 logerror(tar_result.stderr)
                 isload = 1
@@ -104,7 +104,7 @@ def decompile(argv):
             isload = 1
             thr.join()
             try:
-                run([str(exe_path)] + exe_args, check=True)
+                call([str(exe_path)] + exe_args)
             except Exception as e:
                 logerror(e)
         else:

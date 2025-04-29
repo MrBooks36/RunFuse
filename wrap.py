@@ -1,14 +1,14 @@
 def wrap(argv):
     try:
-        import subprocess
+        from subprocess import run
         from os import chdir, getcwd
         from pathlib import Path
         from time import sleep
         from threading import Thread
         from tkinter import Tk, Label, messagebox
-
+        cwd = getcwd()
         def logerror(arg):
-            with open('ERROR.txt', "w") as file:
+            with open(cwd+'\\ERROR.txt', "w") as file:
                 file.write(arg)
             messagebox.showerror("ERROR!", str(arg))
 
@@ -54,7 +54,7 @@ def wrap(argv):
 
         folder_name = dir_path.name
         output_tar_path = argv[3] if len(argv) >= 4 else f"{folder_name}.runfuse"
-        tar_file_path = Path(getcwd()) / output_tar_path
+        tar_file_path = Path(cwd) / output_tar_path
 
         try:
             thr = None
@@ -66,8 +66,8 @@ def wrap(argv):
             tar_command = ['tar', '-vczf', str(tar_file_path), folder_name]
 
             # Use subprocess to handle the tar command
-            result = subprocess.run(tar_command, capture_output=True, text=True)
-
+            result = run(tar_command, shell=True)
+            chdir(cwd)
             if result.returncode != 0:
                 logerror(f"Tar command failed: {result.stderr}")
                 isload = 2
