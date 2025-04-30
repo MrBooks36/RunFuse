@@ -45,6 +45,11 @@ def decompile(argv):
             root.after(0, update_label)
             root.mainloop()
         print("loading def")
+        # Start the loading animation
+        thr = Thread(target=loading)
+        thr.setDaemon(True)
+        thr.start()
+        print('thread started')        
         def list_folder_in_tar(tar_file_path):
          # Open the tar file in read mode
          with opentar(tar_file_path, 'r:*') as tar:
@@ -84,11 +89,6 @@ def decompile(argv):
         if not temp_dir.exists():
             makedirs(temp_dir)
         print("Path setup end")
-        # Start the loading animation
-        thr = Thread(target=loading)
-        thr.setDaemon(True)
-        thr.start()
-        print('thread started')
 
         # Extract folder
         print('Extract folder start')
