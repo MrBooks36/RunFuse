@@ -1,5 +1,6 @@
 def wrap(argv):
     try:
+        #Setup
         from subprocess import run
         from os import chdir, getcwd
         from pathlib import Path
@@ -7,13 +8,13 @@ def wrap(argv):
         from threading import Thread
         from tkinter import Tk, Label, messagebox
         cwd = getcwd()
+        isload = 0
+
+        # Function setup
         def logerror(arg):
             with open(cwd+'\\ERROR.txt', "w") as file:
                 file.write(arg)
             messagebox.showerror("ERROR!", str(arg))
-
-        isload = 0
-
         def loading():
             root = Tk()
             root.overrideredirect(True)
@@ -37,13 +38,13 @@ def wrap(argv):
             if isload != 2:
                 messagebox.showinfo("Done!", f"{tar_file_path} created successfully.")
             root.destroy()
-
+        
+        #File Checks
         try:
             dir_path = Path(argv[2])
             if not dir_path.is_dir():
                 logerror(f"Error: {argv[2]} is not a valid directory.")
                 return
-
             runtime_path = dir_path / 'runtime.json'
             if not runtime_path.exists():
                 logerror(f"Error: runtime.json not found in {dir_path}.")
@@ -51,7 +52,7 @@ def wrap(argv):
         except IndexError:
             logerror("Error: Missing directory argument.")
             return
-
+        #Path setup
         folder_name = dir_path.name
         output_tar_path = argv[3] if len(argv) >= 4 else f"{folder_name}.runfuse"
         tar_file_path = Path(cwd) / output_tar_path
