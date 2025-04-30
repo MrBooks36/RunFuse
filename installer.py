@@ -3,6 +3,7 @@ from tkinter import ttk
 import threading
 from tarfile import open as opentar
 from os import getlogin
+from os.path import dirname
 
 class LoadingScreen:
     def __init__(self, root):
@@ -32,7 +33,7 @@ class LoadingScreen:
 
     def installtask(self):
      try:
-      with opentar("runfuse.tar", 'r') as tar:
+      with opentar(dirname(__file__)+"\\runfuse.tar", 'r') as tar:
             tar.extractall(path=f"C:/Users/{getlogin()}/AppData/Local/Programs", filter='fully_trusted')
      except Exception as e:
          with open("ERROR.txt", 'w') as file:
