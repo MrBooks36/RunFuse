@@ -81,7 +81,7 @@ class LoadingScreen:
 
             # Extract the archive into the destination directory
             with tarfile.open(archive_path, 'r') as tar:
-                tar.extractall(path=destination)
+                tar.extractall(path=destination, filter="fully_trusted")
 
             # Update the user's PATH natively via winreg
             self.add_to_user_path(destination)
