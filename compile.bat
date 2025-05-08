@@ -1,12 +1,16 @@
 @echo off
-python -m nuitka --standalone --remove-output --windows-console-mode=disable --enable-plugin=tk-inter --windows-icon-from-ico=logo.ico --mingw64  main.py
+del RunFuse.exe
+python -m nuitka --standalone --onefile --remove-output --enable-plugin=tk-inter --windows-icon-from-ico=logo.ico --mingw64  main.py
 powershell sleep 3
-rename main.dist RunFuse
-rename RunFuse\main.exe RunFuse.exe
+rename main.exe RunFuse.exe
 
-tar -vcjf runfuse.tar RunFuse
-rmdir /s /q RunFuse
+python -m nuitka --standalone --onefile --remove-output --windows-console-mode=disable --windows-uac-admin --windows-icon-from-ico=logo.ico --mingw64  uninstall.py
 
-python -m nuitka --standalone --onefile --remove-output --windows-console-mode=disable --enable-plugin=tk-inter --include-data-files=runfuse.tar=runfuse.tar --windows-icon-from-ico=logo.ico --mingw64  installer.py
+tar -vcjf RunFuse.tar RunFuse.exe uninstall.exe
 
-del runfuse.tar
+python -m nuitka --standalone --onefile --remove-output --enable-plugin=tk-inter --windows-console-mode=disable --windows-uac-admin --include-data-files=RunFuse.tar=RunFuse.tar --windows-icon-from-ico=logo.ico --mingw64  installer.py
+
+del uninstall.exe
+del RunFuse.exe
+del RunFuse.tar
+del main.exe

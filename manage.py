@@ -26,28 +26,5 @@ def rmold():
                 except Exception as e:
                     print(f"Error deleting folder {folder_path}: {e}")
 
-
-def uninstall():
-    from os import system
-    from os.path import dirname, abspath, exists
-    from sys import argv
-    from shutil import rmtree, copytree
-
-    script_directory = dirname(abspath(argv[0]))
-    if exists("C:\\Windows\\TEMP\\RunFuse"): rmtree("C:\\Windows\\TEMP\\RunFuse")
-    copytree(script_directory, "C:\\Windows\\TEMP\\RunFuse")
-    file = open("C:\\Windows\\TEMP\\temp.asdf", "w")
-    file.write(script_directory)
-    system('start cmd /c C:\\Windows\\TEMP\\RunFuse\\Runfuse.exe uninstall2')
-
-def uninstall2():
-        from shutil import rmtree
-        from time import sleep
-        file = open("C:\\Windows\\TEMP\\temp.asdf", "r")
-        path = file.read()
-        sleep(3)
-        rmtree(path)
-        return
-
 #setup 
 rmold()

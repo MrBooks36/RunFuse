@@ -12,8 +12,6 @@ def main():
     if len(argv) > 1:
         command = argv[1].lower()
         if command == 'wrap': wrap(argv)
-        elif command == 'uninstall': uninstall()
-        elif command == 'uninstall2': uninstall2()
         elif command == 'clean': clean()
         else: decompile(argv)
 
