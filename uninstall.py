@@ -31,7 +31,7 @@ def uninstall():
     file = open("C:\\Windows\\TEMP\\temp.asdf", "w")
     file.write(script_directory)
     try:
-        remove('C:/ProgramData/Microsoft/Windows/Start Menu/Programs/RunFuse.lnk')
+        remove(f'C:/Users/{getlogin()}/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/RunFuse.lnk')
     except: pass    
     remove_registry_entry('RunFuse')
     run('start cmd /c C:\\Windows\\TEMP\\RunFuse\\uninstall.exe uninstall2', shell=True)

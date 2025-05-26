@@ -2,7 +2,7 @@ from tkinter import Tk
 from tkinter.ttk import Style, Progressbar, Frame, Label
 from threading import Thread
 from tarfile import open as opentar
-from os import makedirs
+from os import makedirs, getlogin
 from win32com.client import Dispatch
 from os.path import expanduser, join, dirname, abspath, exists
 from winreg import CreateKey, SetValueEx, CreateKey, OpenKey, CloseKey, HKEY_CLASSES_ROOT, HKEY_LOCAL_MACHINE, REG_SZ, KEY_ALL_ACCESS
@@ -61,7 +61,7 @@ class LoadingScreen:
         finally:
          CloseKey(reg_key)    
 
-    def create_shortcut(self, exe_path, shortcut_name="RunFuse", where="C:/ProgramData/Microsoft/Windows/Start Menu/Programs/"):
+    def create_shortcut(self, exe_path, shortcut_name="RunFuse", where=f'C:/Users/{getlogin()}/AppData/Roaming/Microsoft/Windows/Start Menu/Programs'):
         CoInitialize() 
         try:
          # Define the path for the Start Menu
@@ -104,7 +104,6 @@ class LoadingScreen:
             display_name = "Scan with VSanner"
             script_path = join(user_home, "AppData", "Local", "Programs", "RunFuse", "RunFuse.exe")
             print(f"{script_path} {display_name}")
-            self.add_context_menu_option(display_name, script_path)
             self.create_registry_entry(
             app_name='RunFuse',
             version='1.0.0',
