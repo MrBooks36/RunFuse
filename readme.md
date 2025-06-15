@@ -24,9 +24,8 @@
 
 - Windows OS (required)
 - Python 3.10+
-- [Nuitka](https://nuitka.net/) for compilation
+- `pip` for managing dependencies
 - Admin privileges (for install/uninstall, optional)
-- `tar` (included in Git Bash or Windows 10+)
 
 ---
 
@@ -108,26 +107,6 @@ python uninstall.py
 
 ---
 
-## 🛠️ Build System: `compile.bat`
-
-Use the included `compile.bat` script to generate the full set of distributables with [Nuitka](https://nuitka.net/). It does the following:
-
-1. Builds `main.py` into a onefile executable (`RunFuse.exe`) with Tkinter and a custom icon.
-2. Builds `uninstall.py` as a UAC-elevated silent uninstaller.
-3. Packages `RunFuse.exe` and `uninstall.exe` into `RunFuse.tar`.
-4. Embeds `RunFuse.tar` into a final `installer.exe` built from `installer.py`.
-5. Cleans up all intermediate build files.
-
-To use it:
-
-```cmd
-compile.bat
-```
-
-> 📌 Note: Requires Nuitka, a working C compiler (MinGW64), and `tar` in PATH.
-
----
-
 ## 📁 Project Structure
 
 ```
@@ -138,7 +117,7 @@ RunFuse/
 ├── manage.py         # Cleaning and environment management
 ├── installer.py      # Installer for .runfuse files
 ├── uninstall.py      # Uninstaller
-├── compile.bat       # Batch helper for full builds
+├── compile.bat       # Batch helper for builds
 ├── logo.ico          # Optional icon for wrapped apps
 ├── licence.md        # License
 └── .gitignore
