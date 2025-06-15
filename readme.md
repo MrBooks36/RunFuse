@@ -87,23 +87,6 @@ python main.py clean
 
 ---
 
-## 🛠️ Installer/Uninstaller (Optional)
-
-### 📥 Install
-
-```bash
-python installer.py <yourfile.runfuse>
-```
-
-- Copies the `.runfuse` file into a system location and sets up an environment to run it.
-
-### ❌ Uninstall
-
-```bash
-python uninstall.py
-```
-
-- Removes the installed `.runfuse` application and its files.
 
 ---
 
